@@ -1,0 +1,144 @@
+{
+    "$schema": "./zowe.schema.json",
+    "profiles": {
+        "zosmf": {
+            "type": "zosmf",
+            "properties": {
+                "port": 443,
+                "host": "ESYSMVS.wsclab.washington.ibm.com"
+            },
+            "secure": [
+                "user",
+                "password"
+            ]
+        },
+        "idzee": {
+            "type": "idzee",
+            "properties": {
+                "port": 58762,
+                "host": "192.168.5.58",
+                "protocol": "http"
+            },
+            "secure": [
+                "user",
+                "password"
+            ]
+        },
+        "tso": {
+            "type": "tso",
+            "properties": {
+                "account": "",
+                "codePage": "1047",
+                "logonProcedure": "IZUFPROC"
+            },
+            "secure": []
+        },
+        "ssh": {
+            "type": "ssh",
+            "properties": {
+                "port": 22,
+                "host": "ESYSMVS.wsclab.washington.ibm.com"
+            },
+            "secure": []
+        },
+        "cics": {
+            "type": "cics",
+            "properties": {},
+            "secure": []
+        },
+        "apa": {
+            "type": "apa",
+            "properties": {},
+            "secure": []
+        },
+        "rse": {
+            "type": "rse",
+            "properties": {
+                "host": "ESYSMVS.wsclab.washington.ibm.com",
+                "port": 6800,
+                "basePath": "rseapi",
+                "protocol": "https",
+                "rejectUnauthorized": false,
+                "authOrder": "token, bearer"
+            },
+            "secure": [
+                "tokenValue"
+            ]
+        },
+        "zOpenDebug": {
+            "type": "zOpenDebug",
+            "properties": {
+                "host": "ESYSMVS.wsclab.washington.ibm.com",
+                "dpsPort": 8143,
+                "dpsContextRoot": "api/v1",
+                "dpsSecured": true,
+                "rdsPort": 8002,
+                "rdsSecured": true,
+                "rejectUnauthorized": false,
+                "uuid": "e6cc7154-fb97-4b00-84eb-11207cab1cbc"
+            },
+            "secure": [
+                "user",
+                "password"
+            ]
+        },
+        "zftp": {
+            "type": "zftp",
+            "properties": {
+                "port": 21,
+                "secureFtp": true
+            },
+            "secure": []
+        },
+        "global_base": {
+            "type": "base",
+            "properties": {
+                "host": "",
+                "rejectUnauthorized": true
+            },
+            "secure": [
+                "user",
+                "password"
+            ]
+        },
+        "cicsia": {
+            "type": "cicsia",
+            "db2HostName": "ESYSMVS.wsclab.washington.ibm.com",
+            "db2PortNumber": 1467,
+            "db2Location": "DB1PESYS",
+            "iaApiHostName": "ESYSMVS.wsclab.washington.ibm.com",
+            "iaApiPortNumber": 443,
+            "schema": "CICSIADB",
+            "name": "CICSIADB",
+            "rejectUnauthorized": true
+        },
+        "cicsiacollector": {
+            "type": "cicsiacollector",
+            "properties": {},
+            "secure": []
+        },
+        "apa_sw_CS#SW161": {
+            "type": "apa",
+            "properties": {
+                "port": 2800,
+                "rejectUnauthorized": false
+            },
+            "secure": []
+        }
+    },
+    "defaults": {
+        "zosmf": "zosmf",
+        "idzee": "idzee",
+        "tso": "tso",
+        "ssh": "ssh",
+        "cics": "cics",
+        "apa": "apa",
+        "rse": "rse",
+        "zOpenDebug": "zOpenDebug",
+        "zftp": "zftp",
+        "base": "global_base",
+        "cicsia": "cicsia",
+        "cicsiacollector": "cicsiacollector"
+    },
+    "autoStore": true
+}

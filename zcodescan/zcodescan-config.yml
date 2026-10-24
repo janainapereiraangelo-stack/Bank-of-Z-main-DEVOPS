@@ -1,0 +1,51 @@
+################################################################
+# LICENSED MATERIALS - PROPERTY OF IBM
+# "RESTRICTED MATERIALS OF IBM"
+# (C) COPYRIGHT IBM CORPORATION 2026. ALL RIGHTS RESERVED
+# US GOVERNMENT USERS RESTRICTED RIGHTS - USE, DUPLICATION,
+# OR DISCLOSURE RESTRICTED BY GSA ADP SCHEDULE
+# CONTRACT WITH IBM CORPORATION
+################################################################
+#
+# ZCodeScan configuration file — Bank of Z
+#
+# This file is the base configuration checked into the repository.
+# It is used automatically when no environment-specific config
+# ($HOME/zcs_config_file.yml) is found on the z/OS USS system.
+#
+# To override settings per environment, copy this file to
+# $HOME/zcs_config_file.yml and adjust as needed.
+#
+# Reference: IBM ZCodeScan documentation
+################################################################
+
+# Source encoding of the COBOL/PL/I files being scanned
+encoding: IBM-1047
+
+# Maximum return code accepted from the scan (0-8).
+# 0 = only violations of severity ERROR cause failure
+# 4 = violations of severity WARNING and above cause failure
+# 8 = all severities reported but scan never fails the build
+maxReturnCode: 4
+
+# Languages to scan
+languages:
+  - COBOL
+  - PLI
+
+# Scan behaviour
+options:
+  # Stop on first unrecoverable parse error (false = continue scanning all files)
+  stopOnError: false
+  # Emit progress messages during scan
+  verbose: false
+  # Include copybook locations in violation messages
+  includeCopybooks: true
+
+# Export settings (formats are specified on the command line via -et)
+# No additional configuration needed here for sonarqube/junit exports.
+
+# Logging
+logging:
+  level: INFO
+  file: zcodescan.log

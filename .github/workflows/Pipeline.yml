@@ -1,0 +1,162 @@
+name: boz-pipeline
+
+# =============================================================================
+# Bank of Z — Full DevOps Pipeline
+#
+# Executes the complete CI/CD pipeline on z/OS USS:
+#   1. ZCodeScan  — static analysis (TAZ)
+#   2. DBB Build  — impact/pipeline build (DBB/zBuilder)
+#   3. Wazi Deploy — generate + deploy (WASI)
+#   4. Verify     — post-install verification tests
+#
+# Triggers:
+#   - Push to main or release/* branches
+#   - Pull Request targeting main (impact build only, no deploy)
+#   - Manual dispatch (workflow_dispatch) — allows choosing build type
+#
+# Required repository variables (Settings > Variables):
+#   ZOS_HOST          — z/OS USS hostname for SSH
+#   ZOS_SANDBOX_DIR   — base sandbox directory on z/OS USS
+#   BOZ_FRONTEND_URL  — Bank of Z frontend URL (e.g. http://<host>:9081)
+#
+# Required repository secrets (Settings > Secrets):
+#   GH_ACTIONS_PAT    — GitHub Personal Access Token for git clone on USS
+# =============================================================================
+
+on:
+    push:
+        branches:
+            - main
+            - "release/**"
+    pull_request:
+        types:
+            - opened
+            - reopened
+            - synchronize
+    workflow_dispatch:
+        inputs:
+            buildType:
+                description: "DBB build type (pipeline = impact, full = rebuild all)"
+                required: false
+                default: "pipeline"
+                type: choice
+                options:
+                    - pipeline
+                    - full
+
+env:
+    uniqueWorkspaceId: ${{ vars.ZOS_SANDBOX_DIR }}/pipeline/${{ github.repository }}/${{ github.ref_name }}/run_${{ github.run_number }}
+    branch: ${{ github.ref_name }}
+    application: ${{ github.event.repository.name }}
+    zosHost: ${{ vars.ZOS_HOST }}
+    bozFrontendUrl: ${{ vars.BOZ_FRONTEND_URL }}
+    # For PRs always use impact build; push/dispatch honours input (default: pipeline)
+    buildType: ${{ github.event_name == 'pull_request' && 'pipeline' || (github.event.inputs.buildType || 'pipeline') }}
+    # Deploy only on push to main/release — not on PRs
+    runDeploy: ${{ github.event_name != 'pull_request' }}
+
+jobs:
+    # -------------------------------------------------------------------------
+    # 1. Print pipeline parameters
+    # -------------------------------------------------------------------------
+    controller:
+        runs-on: self-hosted
+        steps:
+            - name: pipeline-parameters
+              run: |
+                  echo " "
+                  echo "Bank of Z — Full DevOps Pipeline"
+                  echo "*******************************************"
+                  echo "Run ID          = ${{ github.run_number }}"
+                  echo "Trigger         = ${{ github.event_name }}"
+                  echo "Branch          = ${{ env.branch }}"
+                  echo "Application     = ${{ env.application }}"
+                  echo "z/OS Host       = ${{ env.zosHost }}"
+                  echo "Workspace       = ${{ env.uniqueWorkspaceId }}"
+                  echo "Build type      = ${{ env.buildType }}"
+                  echo "Deploy enabled  = ${{ env.runDeploy }}"
+
+    # -------------------------------------------------------------------------
+    # 2. Clone repository to z/OS USS
+    # -------------------------------------------------------------------------
+    clone:
+        needs: controller
+        runs-on: self-hosted
+        steps:
+            - name: clone-repository-to-uss
+              run: |
+                  ssh ${{ env.zosHost }} \
+                    ". ./.profile && gitClone.sh \
+                      -w ${{ env.uniqueWorkspaceId }} \
+                      -r https://${{ secrets.GH_ACTIONS_PAT }}@github.com/${{ github.repository }}.git \
+                      -b ${{ env.branch }}"
+
+    # -------------------------------------------------------------------------
+    # 3. ZCodeScan — static analysis (TAZ)
+    # -------------------------------------------------------------------------
+    static-scan:
+        needs: clone
+        runs-on: self-hosted
+        steps:
+            - name: run-zcodescan
+              run: |
+                  ssh ${{ env.zosHost }} "
+                    . ./.profile &&
+                    cd ${{ env.uniqueWorkspaceId }} &&
+                    if [ -d ${{ env.application }} ]; then cd ${{ env.application }}; fi &&
+                    bash .setup/pipeline-common.sh scan
+                  "
+
+    # -------------------------------------------------------------------------
+    # 4. DBB Build (zBuilder)
+    # -------------------------------------------------------------------------
+    build:
+        needs: static-scan
+        runs-on: self-hosted
+        steps:
+            - name: run-dbb-build
+              run: |
+                  ssh ${{ env.zosHost }} "
+                    . ./.profile &&
+                    cd ${{ env.uniqueWorkspaceId }} &&
+                    if [ -d ${{ env.application }} ]; then cd ${{ env.application }}; fi &&
+                    bash .setup/pipeline-common.sh build ${{ env.buildType }}
+                  "
+
+    # -------------------------------------------------------------------------
+    # 5. Wazi Deploy — generate + deploy (WASI)
+    #    Skipped on Pull Requests (deploy only to main/release)
+    # -------------------------------------------------------------------------
+    deploy:
+        needs: build
+        runs-on: self-hosted
+        if: ${{ github.event_name != 'pull_request' }}
+        steps:
+            - name: run-wazi-deploy
+              run: |
+                  ssh ${{ env.zosHost }} "
+                    . ./.profile &&
+                    cd ${{ env.uniqueWorkspaceId }} &&
+                    if [ -d ${{ env.application }} ]; then cd ${{ env.application }}; fi &&
+                    bash .setup/pipeline-common.sh deploy
+                  "
+
+    # -------------------------------------------------------------------------
+    # 6. Post-install verification tests
+    #    Runs after deploy (main/release) or after build (PR)
+    # -------------------------------------------------------------------------
+    verify:
+        needs:
+            - build
+            - deploy
+        runs-on: self-hosted
+        if: ${{ always() && needs.build.result == 'success' && (needs.deploy.result == 'success' || needs.deploy.result == 'skipped') }}
+        steps:
+            - name: run-verification-tests
+              run: |
+                  ssh ${{ env.zosHost }} "
+                    . ./.profile &&
+                    cd ${{ env.uniqueWorkspaceId }} &&
+                    if [ -d ${{ env.application }} ]; then cd ${{ env.application }}; fi &&
+                    bash .setup/pipeline-common.sh verify
+                  "

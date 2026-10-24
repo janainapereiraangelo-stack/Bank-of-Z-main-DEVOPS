@@ -1,0 +1,396 @@
+################################################################
+# LICENSED MATERIALS - PROPERTY OF IBM
+# "RESTRICTED MATERIALS OF IBM"
+# (C) COPYRIGHT IBM CORPORATION 2020, 2026. ALL RIGHTS RESERVED
+# US GOVERNMENT USERS RESTRICTED RIGHTS - USE, DUPLICATION,
+# OR DISCLOSURE RESTRICTED BY GSA ADP SCHEDULE
+# CONTRACT WITH IBM CORPORATION
+################################################################
+
+name: sam
+description: For IBM Z Open Editor 6.9.0 or newer. Wazi's code samples in COBOL, PL/I, HLASM, REXX, JCL, C++.
+version: 6.9.0
+author:
+  name: IBM CORPORATION
+
+propertyGroups:
+  - name: cobol-copybooks
+    language: cobol
+    libraries:
+      - name: syslib
+        type: local
+        locations:
+          - "**/COPYBOOK"
+          - "**/copy"
+      - name: syslib
+        type: mvs
+        locations:
+          - "${HLQ}.SAMPLE.COPY"
+      - name: MYLIB
+        type: mvs
+        locations:
+          - ${HLQ}.SAMPLE.COPYLIB
+      - name: MYLIB
+        type: local
+        locations:
+          - "**/COPYLIB-MVS"
+      - name: MYFILE
+        type: local
+        locations:
+          - "**/COPYLIB"
+
+  - name: pl1-includes
+    language: pl1
+    compilerOptions: not(!),sysparm('PRODUCTION')
+    libraries:
+      - name: syslib
+        type: local
+        locations:
+          - "**/INCLUDES"
+      - name: syslib
+        type: mvs
+        locations:
+          - ${HLQ}.SAMPLE.PLINC
+      - name: MYLIB
+        type: mvs
+        locations:
+          - "${HLQ}.SAMPLE.PLI.INCLLIB"
+      - name: MYLIB
+        type: local
+        locations:
+          - "**/INCLUDELIB-MVS"
+      - name: MYFILE
+        type: local
+        locations:
+          - "**/INCLUDELIB"
+
+  - name: hlasm-local
+    language: hlasm
+    libraries:
+      - name: syslib
+        type: local
+        locations:
+          - "**/ASMCOPY"
+      - name: maclib
+        type: local
+        locations:
+          - "**/ASMMAC"
+      - name: maclib
+        type: mvs
+        locations:
+          - "${HLQ}.SAMPLE.MACLIB"
+
+  - name: rexx-local
+    language: rexx
+    libraries:
+      - name: syslib
+        type: local
+        locations:
+          - "**/REXXINC"
+      - name: REXXLIB
+        type: local
+        locations:
+          - "**/REXXLIB"
+
+  - name: jcl-includes
+    language: jcl
+    libraries:
+      - name: jcllib
+        type: local
+        locations:
+          - "JCLLIB"
+      - name: jcllib
+        type: mvs
+      - name: proclib
+        type: local
+        locations:
+          - "JCLPROC"
+      - name: syslib
+        type: mvs
+        locations:
+          - "SYS1.PROCLIB"
+
+profiles:
+  # Custom ZCodeScan rules example
+  - name: zcodescan
+    type: zcodescan
+    settings:
+      rules:
+        - type: local
+          locations:
+            - "zcodescan/sam-rules.yaml"
+            - "zcodescan/psam-rules.yaml"
+      customRuleModels:
+        - type: local
+          locations:
+            - "zcodescan/rules-domains.yaml"
+      customRuleJars:
+        - type: local
+          locations:
+            - "zcodescan/customrules/COBOL/cobol-customrules/target/zcodescan-1.0-SNAPSHOT.jar"
+      baselines:
+        - type: local
+          locations:
+            - "zcodescan/baseline.json"
+
+  # User build v2 example 1: Regular Zowe-based DBB build
+  - name: zowe-upload-userbuild2
+    type: userbuild
+    settings:
+      tasks:
+        - dependencies:
+            additionalDependencies:
+              - dbb-app.yaml
+        - build:
+            remoteCommandShell: >
+              export DBB_HOME=/shared/IBM/dbb JAVA_HOME=/usr/lpp/java/J21.0_64 DBB_BUILD=/u/rafaelt/dbb-build-conf;
+              /shared/IBM/dbb/bin/dbb build user
+              --hlq ${dbbHlq}
+              --errPrefix ${errPrefix}
+              ${currentProgram}
+        - results:
+            logFilePatterns:
+              - "${application}/logs/*.log"
+              - "${application}/logs/*.json"
+              - "${application}/logs/BuildReport.html"
+
+  # User build v2 example 2: GRUB-based build using Zowe CLI
+  # To use define ZAPP vars DBB_HOME, DBB_JAVA_HOME, and DBB_BUILD in your user settings
+  - name: grub-zowe-userbuild2
+    type: userbuild
+    settings:
+      tasks:
+        - prerequisites:
+            localCommand: >
+              .zopeneditor/grub_client prerequisites
+              --zoweProfile ${defaultZoweProfile}
+              --remoteWorkspace ${dbbWorkspace}
+              --verbose
+        - upload:
+            dependenciesUpload: false
+            localCommand: >
+              .zopeneditor/grub_client gitBundle
+              --zoweProfile ${defaultZoweProfile}
+              --remoteWorkspace ${dbbWorkspace}
+              --verbose
+        - build:
+            localCommand: >
+              .zopeneditor/grub_client execute --zoweProfile ${defaultZoweProfile}
+              --remoteWorkspace ${dbbWorkspace}/${application}
+              --command "export DBB_HOME=${DBB_HOME} DBB_BUILD=${DBB_BUILD} DBB_JAVA_HOME=${DBB_JAVA_HOME} JAVA_HOME=${DBB_JAVA_HOME} && \${DBB_HOME}/bin/dbb build user --hlq ${dbbHlq} --errPrefix ${errPrefix} ${currentProgram} || (iconv -f IBM-1047 -t ISO8859-1 logs/compile-SAM1.cbl.log 2>/dev/null; exit 1)"
+              --verbose
+        - results:
+            logFilePatterns:
+              - "${application}/logs/*.log"
+              - "${application}/logs/*.json"
+              - "${application}/logs/BuildReport.html"
+
+  # User build v2 example 3: GRUB-based build using ssh and git push
+  # To use define ZAPP vars HLQ, ZOSHOST, DBB_HOME, and DBB_BUILD in your user settings
+  - name: grub-ssh-userbuild2
+    type: userbuild
+    settings:
+      tasks:
+        - prerequisites:
+            localCommand: >
+              .zopeneditor/grub_client prerequisites
+              --hostname ${HLQ}@${ZOSHOST}
+              --remoteWorkspace ${dbbWorkspace}
+              --verbose
+        - upload:
+            localCommand: >
+              .zopeneditor/grub_client gitPush
+              --hostname ${HLQ}@${ZOSHOST}
+              --remoteWorkspace ${dbbWorkspace}
+              --gitRemoteName userbuild
+              --verbose
+        - build:
+            localCommand: >
+              .zopeneditor/grub_client execute
+              --hostname ${HLQ}@${ZOSHOST}
+              --remoteWorkspace ${dbbWorkspace}/${application}
+              --command "export DBB_HOME=${DBB_HOME} DBB_BUILD=${DBB_BUILD} DBB_JAVA_HOME=${DBB_JAVA_HOME} && ${DBB_HOME}/bin/dbb build user --hlq ${dbbHlq} --errPrefix ${errPrefix} ${currentProgram}"
+              --verbose
+            # Alternative remoteCommand that will use the current Zowe Profile's SSH or RSE API Command capability
+            #remoteCommandShell: >
+            #  $DBB_HOME/bin/dbb build user --hlq ${dbbHlq} --errPrefix ${errPrefix} ${currentProgram} --verbose
+        - results:
+            localCommand: >
+              .zopeneditor/grub_client fetch
+              --hostname ${HLQ}@${ZOSHOST}
+              --remoteWorkspace ${dbbWorkspace}/${application}
+              --files "logs/*.log logs/*.json logs/*.html"
+              --gitattributes
+              --localDir logs
+              --verbose
+
+  # User build v2 example 4: GRUB-based C++ build using Zowe CLI (use with CPP/ccnubrc.C sample)
+  - name: grub-cpp-zowe-userbuild2
+    type: userbuild
+    settings:
+      tasks:
+        - prerequisites:
+            localCommand: >
+              .zopeneditor/grub_client prerequisites
+              --zoweProfile ${defaultZoweProfile}
+              --remoteWorkspace ${dbbWorkspace}
+              --verbose
+        - upload:
+            localCommand: >
+              .zopeneditor/grub_client gitBundle
+              --zoweProfile ${defaultZoweProfile}
+              --remoteWorkspace ${dbbWorkspace}
+              --verbose
+        - build:
+            localCommand: >
+              .zopeneditor/grub_client execute
+              --zoweProfile ${defaultZoweProfile}
+              --remoteWorkspace ${dbbWorkspace}/${application}/CPP
+              --command "make > build.log 2>&1"
+              --verbose
+        - results:
+            logFilePatterns:
+              - "${application}/CPP/*.log"
+        - post:
+            localCommand: >
+              .zopeneditor/grub_client execute
+              --zoweProfile ${defaultZoweProfile}
+              --remoteWorkspace ${dbbWorkspace}/${application}/CPP
+              --command "./bio 1970/01/01"
+              --verbose
+
+  # User build v1 profile zBuilder example, requires IBM Dependency-Based Build v3.0.3 or newer
+  - name: zBuilder-userbuild
+    type: dbb
+    settings:
+      command: "/shared/IBM/dbb/bin/dbb build"
+      lifecycle: user
+      lifecycleArgs:
+        - "--hlq ${dbbHlq}"
+        - "--errPrefix UB.${errPrefix}" # will be ignored if Advanced Features are not available
+      additionalDependencies:
+        - "dbb-app.yaml"
+      logFilePatterns:
+        - "*.log"
+        - "BuildReport.html"
+        - "*.json"
+
+  # User build v1 profile Groovy example, requires IBM Dependency-Based Build v2.x or newer and dbb_zappbuild GitHub repo
+  - name: groovyz-userbuild
+    type: dbb
+    settings:
+      application: SAM
+      command: "unset JAVA_OPTS; $DBB_HOME/bin/groovyz"
+      buildScriptPath: "${dbbWorkspace}/dbb-zappbuild/build.groovy"
+      buildScriptArgs:
+        - "--userBuild"
+        - "--workspace ${dbbWorkspace}"
+        - "--application ${application}"
+        - "--hlq ${dbbHlq}"
+        - "--outDir ${dbbLogDir}"
+        - "--errPrefix UB.${errPrefix}" # will be ignored if Advanced Features are not available
+        # - "--dependencyFile ${dependencyFile}" # use with older versions of dbb-zappbuild
+      additionalDependencies:
+        - application-conf
+      logFilePatterns:
+        - "${buildFile.basename}.log"
+        - "BuildReport.*"
+
+  # RSE API mappings profile example using US defaults. Adjust to your code pages.
+  - name: RSE-Mappings
+    type: rseapi
+    settings:
+      mappings:
+        - resource: "**.SAMPLE.COB**"
+          extension: cbl
+          transfer: text
+          encoding: IBM-037
+          memberMappings:
+            - extension: dat
+              transfer: binary
+              resource: "*DAT"
+        - resource: "**PLI*"
+          extension: pl1
+          transfer: text
+          encoding: IBM-037
+      default.encoding: IBM-037
+
+  # Preprocessor example. See file preprocessor/README.md and documentation.
+  - name: local-cobol
+    language: cobol
+    type: preprocessor
+    location: local
+    settings:
+      command: |
+        "${javaHome}/bin/java" -jar ${workspace}/preprocessor/COBOL/local-preprocessor/target/local-cobol-preprocessor-1.0-SNAPSHOT.jar ${input_file} ${output_file}
+      outputPath: ./preprocessor/output
+      fileExtension: cee
+      environmentVariables:
+        some: var
+  - name: remote-cobol
+    language: cobol
+    type: preprocessor
+    location: mvs
+    settings:
+      commandDataSet: ${HLQ}.SAMPLE.REXX(CBLPRPC)
+      tempDataHLQ: ${HLQ}
+      outputDataSet: ${HLQ}.SAMPLE.CBL2()
+      commandParameters: ""
+      # programDataSet: ${HLQ}.SAMPLE.CBL2()
+  - name: local-pli
+    language: pl1
+    type: preprocessor
+    location: local
+    settings:
+      command: |
+        "${javaHome}/bin/java" -jar ${workspace}/preprocessor/PLI/local-preprocessor/target/local-pl1-preprocessor-1.0-SNAPSHOT.jar ${input_file} ${output_file}
+      outputPath: ./preprocessor/output
+      fileExtension: pci
+      environmentVariables:
+        some: var
+  - name: remote-pli
+    language: pl1
+    type: preprocessor
+    location: mvs
+    settings:
+      commandDataSet: ${HLQ}.SAMPLE.REXX(PLIPRPC)
+      tempDataHLQ: ${HLQ}
+      outputDataSet: ${HLQ}.SAMPLE.PLIO()
+      commandParameters: ""
+      # programDataSet: ${HLQ}.PREPROC.COBOL()
+
+  # - name: pli-expand-macros
+  #   language: pl1
+  #   type: preprocessor
+  #   location: mvs
+  #   settings:
+  #     commandDataSet: ${HLQ}.PREPROC(PLIPRPC)
+  #     tempDataHLQ: ${HLQ}
+  #     outputDataSet: ${HLQ}.PREPROC.OUTPUT()
+  #     commandParameters: <SYSPRINT>${HLQ}.LOG.OUTPUT()</SYSPRINT>
+
+  # EDT (Early Development Testing) - Test profile for Batch programs
+  # Used by IBM Early Development Testing extension (IBM TAZ EDT) to record,
+  # replay and unit test BANKTRX and DEVOPSPL batch programs.
+  # The extension uses the first profile of type "test", so recording and
+  # unitTest settings must live in the same profile.
+  - name: edt-batch
+    type: test
+    settings:
+      recording:
+        applicationToCapture:
+          recordingType: Batch
+          jclSteps: JCL/RUNBANK.jcl
+          programs:
+            - BANKTRX
+            - DEVOPSPL
+        hostRecordingSettings:
+          dteEngineLocation: ${HLQ}.SEQAMOD
+      unitTest:
+        procLib:
+          - SYS1.PROCLIB
+        userLibraries:
+          - ${HLQ}.SAMPLE.LOAD
+        defaultTestCaseFolder: tests/unit
+        jobcard: "//EDTTEST  JOB ,NOTIFY=&SYSUID,MSGCLASS=H,MSGLEVEL=(1,1)"
+

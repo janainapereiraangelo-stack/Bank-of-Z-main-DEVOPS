@@ -1,0 +1,44 @@
+################################################################
+# LICENSED MATERIALS - PROPERTY OF IBM
+# "RESTRICTED MATERIALS OF IBM"
+# (C) COPYRIGHT IBM CORPORATION 2020, 2025. ALL RIGHTS RESERVED
+# US GOVERNMENT USERS RESTRICTED RIGHTS - USE, DUPLICATION,
+# OR DISCLOSURE RESTRICTED BY GSA ADP SCHEDULE
+# CONTRACT WITH IBM CORPORATION
+################################################################
+
+version: 1.0.0
+
+application:
+  name: Bank-of-Z-main
+
+  tasks:
+    - task: Cobol
+      sources:
+        - "**/cics/cobol/*.cbl"
+        - "**/ims/cobol/*.cbl"
+
+      variables:
+        - name: dependencySearchPath
+          value: search:${WORKSPACE}/?path=${APP_DIR_NAME}/src/base/cics/copy/*.cpy;${APP_DIR_NAME}/src/base/ims/copy/*.cpy
+        - name: SIGYCOMP
+          value: COBOL.V6R2.SIGYCOMP
+        - name: SCEELKED
+          value: SYS1.CEE.SCEELKED
+
+    - task: PLI
+      sources:
+        - "**/pli/*.pli"
+
+      variables:
+        - name: dependencySearchPath
+          value: search:${WORKSPACE}/?path=${APP_DIR_NAME}/src/base/cics/copy/*.cpy
+
+    - task: Assembler
+      sources:
+        - "**/PSB/*.asm"
+        - "**/DBD/*.asm"
+
+      variables:
+        - name: dependencySearchPath
+          value: search:${WORKSPACE}/?path=${APP_DIR_NAME}/src/base/ims/copy/*.cpy

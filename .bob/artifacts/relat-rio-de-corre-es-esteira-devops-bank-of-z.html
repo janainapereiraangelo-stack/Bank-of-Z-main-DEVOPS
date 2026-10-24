@@ -1,0 +1,278 @@
+
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Relatório de Correções — Esteira DevOps Bank of Z</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; font-size: 14px; line-height: 1.6; color: #1f2328; background: #ffffff; padding: 32px 16px 48px; }
+  .page { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { color: #57606a; font-size: 13px; margin-bottom: 28px; }
+  h2 { font-size: 15px; font-weight: 700; margin: 30px 0 12px; padding-bottom: 6px; border-bottom: 1px solid #e5e7eb; }
+  h3 { font-size: 13px; font-weight: 700; margin: 18px 0 6px; color: #1f2328; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px; margin-left: 6px; vertical-align: middle; }
+  .ok      { background: #dcfce7; color: #166534; }
+  .warn    { background: #fef9c3; color: #854d0e; }
+  .issue   { background: #fee2e2; color: #991b1b; }
+  .info    { background: #dbeafe; color: #1e40af; }
+  .manual  { background: #f3e8ff; color: #6b21a8; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 18px; font-size: 13px; }
+  th { background: #f7f8fa; text-align: left; padding: 7px 10px; border: 1px solid #e5e7eb; color: #57606a; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  td { padding: 7px 10px; border: 1px solid #e5e7eb; vertical-align: top; }
+  tr:nth-child(even) td { background: #fafafa; }
+  .diff { background: #f7f8fa; border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px 14px; margin: 10px 0 16px; font-size: 12px; font-family: monospace; white-space: pre-wrap; word-break: break-word; }
+  .diff .del { color: #b91c1c; background: #fff1f2; display: block; }
+  .diff .add { color: #15803d; background: #f0fdf4; display: block; }
+  .diff .ctx { color: #57606a; display: block; }
+  .diff .hdr { color: #3b82d4; display: block; font-style: italic; }
+  .section-header { display: flex; align-items: center; gap: 8px; }
+  .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0 24px; }
+  .summary-card { border: 1px solid #e5e7eb; border-radius: 6px; padding: 14px; text-align: center; }
+  .summary-card .number { font-size: 28px; font-weight: 700; line-height: 1.1; }
+  .summary-card .label  { font-size: 12px; color: #57606a; margin-top: 2px; }
+  .summary-card.green  { border-color: #86efac; background: #f0fdf4; }
+  .summary-card.green .number { color: #166534; }
+  .summary-card.blue   { border-color: #93c5fd; background: #eff6ff; }
+  .summary-card.blue .number { color: #1d4ed8; }
+  .summary-card.purple { border-color: #d8b4fe; background: #faf5ff; }
+  .summary-card.purple .number { color: #6b21a8; }
+  .note { background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; padding: 10px 14px; margin: 12px 0; font-size: 13px; }
+  .note strong { color: #92400e; }
+  ul { padding-left: 20px; margin: 6px 0; }
+  li { margin: 3px 0; }
+  code { font-size: 12px; background: #f0f0f0; padding: 1px 5px; border-radius: 3px; font-family: monospace; }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid #e5e7eb; text-align: center; font-size: 12px; color: #57606a; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Relatório de Correções — Esteira DevOps Bank of Z</h1>
+  <div class="subtitle">DBB (zBuilder) · TAZ (ZCodeScan) · WASI (Wazi Deploy) · GitHub Actions  |  Todas as correções aplicadas diretamente nos arquivos do repositório</div>
+
+  <div class="summary-grid">
+    <div class="summary-card green">
+      <div class="number">6</div>
+      <div class="label">Correções aplicadas</div>
+    </div>
+    <div class="summary-card blue">
+      <div class="number">5</div>
+      <div class="label">Arquivos modificados</div>
+    </div>
+    <div class="summary-card purple">
+      <div class="number">1</div>
+      <div class="label">Arquivo criado</div>
+    </div>
+  </div>
+
+  
+  <h2>Status final por componente</h2>
+  <table>
+    <tr><th>Componente</th><th>Status</th><th>Observação</th></tr>
+    <tr>
+      <td><strong>DBB / zBuilder</strong></td>
+      <td><span class="badge ok">✅ ATIVO</span></td>
+      <td>7 lifecycles operacionais, 9 linguagens mapeadas. Lifecycle <code>merge</code> documentado.</td>
+    </tr>
+    <tr>
+      <td><strong>TAZ / ZCodeScan</strong></td>
+      <td><span class="badge ok">✅ ATIVO</span></td>
+      <td>Fallback para config do repositório. Nunca mais pula silenciosamente o scan.</td>
+    </tr>
+    <tr>
+      <td><strong>WASI / Wazi Deploy</strong></td>
+      <td><span class="badge ok">✅ ATIVO</span></td>
+      <td>Tar de logs corrigido. Typo no log corrigido.</td>
+    </tr>
+    <tr>
+      <td><strong>GitHub Actions — Setup.yml</strong></td>
+      <td><span class="badge ok">✅ ATIVO</span></td>
+      <td>IP hardcoded substituído por variável de repositório <code>BOZ_FRONTEND_URL</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>GitHub Actions — Pipeline.yml</strong></td>
+      <td><span class="badge ok">✅ ATIVO</span></td>
+      <td>Novo workflow criado. Cobre scan → build → deploy → verify em PRs e merges.</td>
+    </tr>
+  </table>
+
+  
+  <h2>1 · WASI — Correção #1: Tar de logs vazio em <code>task-wazi-deploy.sh</code></h2>
+
+  <p style="margin-bottom:10px;font-size:13px;color:#57606a">
+    <strong>Problema:</strong> O <code>finalize_results</code> executava <code>cd "$outputDir"</code> e depois tentava empacotar um subdiretório <code>logs/</code> inexistente — o TAR resultante ficava vazio ou falhava silenciosamente. Além disso, o glob <code>wazideploy*.log</code> sem caminho absoluto não achava os arquivos após o <code>cd</code>.
+  </p>
+
+  <div class="diff"><span class="hdr">--- .setup/tasks/task-wazi-deploy.sh (antes)</span>
+<span class="ctx">finalize_results() {</span>
+<span class="ctx">    RC=$?</span>
+<span class="ctx">    mkdir -p "$outputDir" "$evidenceDir"</span>
+<span class="del">-   cd "$outputDir"</span>
+<span class="ctx"> </span>
+<span class="del">-   if ls wazideploy*.log &gt;/dev/null 2&gt;&amp;1; then</span>
+<span class="del">-       chtag -tc IBM-1047 wazideploy*.log</span>
+<span class="ctx">        ...</span>
+<span class="del">-       tar cf "$LOG_TAR" "logs" 2&gt;/dev/null || true</span>
+<span class="ctx">    else</span>
+<span class="ctx">        echo "No Wazi Deploy logs found" &gt; "$outputDir/wazi-deploy-console.log"</span>
+<span class="del">-       tar cf "$LOG_TAR" "logs" 2&gt;/dev/null || true</span>
+<span class="ctx">    fi</span>
+
+<span class="hdr">+++ .setup/tasks/task-wazi-deploy.sh (depois)</span>
+<span class="ctx">finalize_results() {</span>
+<span class="ctx">    RC=$?</span>
+<span class="ctx">    mkdir -p "$outputDir" "$evidenceDir"</span>
+<span class="add">    # sem cd — paths absolutos garantem que o glob e o tar funcionem</span>
+<span class="add">+   if ls "$outputDir"/wazideploy*.log &gt;/dev/null 2&gt;&amp;1; then</span>
+<span class="add">+       chtag -tc IBM-1047 "$outputDir"/wazideploy*.log</span>
+<span class="ctx">        ...</span>
+<span class="add">+       tar cf "$LOG_TAR" -C "$outputDir" . 2&gt;/dev/null || true</span>
+<span class="ctx">    else</span>
+<span class="ctx">        echo "No Wazi Deploy logs found" &gt; "$outputDir/wazi-deploy-console.log"</span>
+<span class="add">+       tar cf "$LOG_TAR" -C "$outputDir" . 2&gt;/dev/null || true</span>
+<span class="ctx">    fi</span></div>
+
+  
+  <h2>2 · WASI — Correção #2: Typo na mensagem de log do generate</h2>
+
+  <p style="margin-bottom:10px;font-size:13px;color:#57606a">
+    <strong>Problema:</strong> Colchete de fechamento ausente na tag de log — produzia saídas como <code>[GENERATE-BANKZ Applying deployment plan...</code> em vez de <code>[GENERATE-BANKZ] Applying deployment plan...</code>.
+  </p>
+
+  <div class="diff"><span class="hdr">--- .setup/tasks/task-wazi-deploy.sh (antes)</span>
+<span class="del">-   print_info "[GENERATE-${APP_BASE_NAME} $line"</span>
+
+<span class="hdr">+++ .setup/tasks/task-wazi-deploy.sh (depois)</span>
+<span class="add">+   print_info "[GENERATE-${APP_BASE_NAME}] $line"</span></div>
+
+  
+  <h2>3 · TAZ — Correção #3: SCAN_CONFIG_FILE externo sem fallback</h2>
+
+  <p style="margin-bottom:10px;font-size:13px;color:#57606a">
+    <strong>Problema:</strong> Quando <code>$HOME/zcs_config_file.yml</code> não existia (ambiente novo ou CI), o scan era pulado silenciosamente com <code>exit 0</code> — sem qualquer análise estática sendo executada, sem erro, sem aviso no log de CI.
+  </p>
+  <p style="margin-bottom:10px;font-size:13px;color:#57606a">
+    <strong>Solução em 2 partes:</strong> (a) Criado <code>zcodescan/zcodescan-config.yml</code> com a configuração base versionada no repositório. (b) Script atualizado com lógica de fallback explícita.
+  </p>
+
+  <h3>3a · Arquivo criado: <code>zcodescan/zcodescan-config.yml</code></h3>
+  <div class="diff"><span class="add">+ encoding: IBM-1047</span>
+<span class="add">+ maxReturnCode: 4</span>
+<span class="add">+ languages:</span>
+<span class="add">+   - COBOL</span>
+<span class="add">+   - PLI</span>
+<span class="add">+ options:</span>
+<span class="add">+   stopOnError: false</span>
+<span class="add">+   verbose: false</span>
+<span class="add">+   includeCopybooks: true</span>
+<span class="add">+ logging:</span>
+<span class="add">+   level: INFO</span>
+<span class="add">+   file: zcodescan.log</span></div>
+
+  <h3>3b · Script atualizado: <code>.setup/tasks/task-zcodescan-static-scan.sh</code></h3>
+  <div class="diff"><span class="hdr">--- antes</span>
+<span class="del">- if [ ! -f $SCAN_CONFIG_FILE ]; then</span>
+<span class="del">-     print_warning "ZCodeScan config file not found: $SCAN_CONFIG_FILE. Skipping scan."</span>
+<span class="del">-     exit 0</span>
+<span class="del">- fi</span>
+
+<span class="hdr">+++ depois</span>
+<span class="add">+ REPO_SCAN_CONFIG="${SCAN_RULE_FILE%/*}/zcodescan-config.yml"</span>
+<span class="add">+ if [ ! -f "${SCAN_CONFIG_FILE}" ]; then</span>
+<span class="add">+     if [ -f "${REPO_SCAN_CONFIG}" ]; then</span>
+<span class="add">+         print_warning "ZCodeScan environment config not found: ${SCAN_CONFIG_FILE}"</span>
+<span class="add">+         print_warning "Falling back to repository base config: ${REPO_SCAN_CONFIG}"</span>
+<span class="add">+         export SCAN_CONFIG_FILE="${REPO_SCAN_CONFIG}"</span>
+<span class="add">+     else</span>
+<span class="add">+         print_error "ZCodeScan config file not found: ${SCAN_CONFIG_FILE}"</span>
+<span class="add">+         print_error "Repository fallback also missing: ${REPO_SCAN_CONFIG}"</span>
+<span class="add">+         print_error "Create ${SCAN_CONFIG_FILE} or ensure zcodescan/zcodescan-config.yml exists."</span>
+<span class="add">+         exit 1</span>
+<span class="add">+     fi</span>
+<span class="add">+ fi</span></div>
+
+  
+  <h2>4 · GitHub Actions — Correção #4: IP hardcoded em <code>Setup.yml</code></h2>
+
+  <p style="margin-bottom:10px;font-size:13px;color:#57606a">
+    <strong>Problema:</strong> <code>bozFrontendUrl: http://9.47.80.84:9081</code> estava hardcoded, impedindo reuso do workflow em outros ambientes.
+  </p>
+
+  <div class="diff"><span class="hdr">--- .github/workflows/Setup.yml (antes)</span>
+<span class="del">-   bozFrontendUrl: http://9.47.80.84:9081</span>
+
+<span class="hdr">+++ .github/workflows/Setup.yml (depois)</span>
+<span class="add">+   bozFrontendUrl: ${{ vars.BOZ_FRONTEND_URL }}</span></div>
+
+  
+  <h2>5 · GitHub Actions — Correção #5: Workflow completo criado (<code>Pipeline.yml</code>)</h2>
+
+  <p style="margin-bottom:10px;font-size:13px;color:#57606a">
+    <strong>Problema:</strong> A pipeline completa <code>scan → build → deploy → verify</code> existia apenas nos scripts shell, sem nenhum workflow GitHub Actions que a acionasse automaticamente.
+  </p>
+  <p style="margin-bottom:10px;font-size:13px;color:#57606a">
+    <strong>Solução:</strong> Criado <code>.github/workflows/Pipeline.yml</code> com os seguintes estágios e regras:
+  </p>
+
+  <table>
+    <tr><th>Job</th><th>Chama</th><th>Condição</th></tr>
+    <tr><td><code>controller</code></td><td>Imprime parâmetros do run</td><td>Sempre</td></tr>
+    <tr><td><code>clone</code></td><td><code>gitClone.sh</code> via SSH</td><td>Sempre</td></tr>
+    <tr><td><code>static-scan</code></td><td><code>pipeline-common.sh scan</code></td><td>Sempre (TAZ)</td></tr>
+    <tr><td><code>build</code></td><td><code>pipeline-common.sh build [tipo]</code></td><td>Sempre (DBB)</td></tr>
+    <tr><td><code>deploy</code></td><td><code>pipeline-common.sh deploy</code></td><td>Apenas push main/release — <strong>não em PRs</strong></td></tr>
+    <tr><td><code>verify</code></td><td><code>pipeline-common.sh verify</code></td><td>Build OK + (deploy OK ou deploy pulado)</td></tr>
+  </table>
+
+  <table>
+    <tr><th>Trigger</th><th>Build type</th><th>Deploy?</th></tr>
+    <tr><td>Push para <code>main</code> ou <code>release/**</code></td><td><code>pipeline</code> (padrão)</td><td>✅ Sim</td></tr>
+    <tr><td>Pull Request</td><td><code>pipeline</code> (impacto)</td><td>❌ Não</td></tr>
+    <tr><td>Manual (<code>workflow_dispatch</code>)</td><td><code>pipeline</code> ou <code>full</code></td><td>✅ Sim</td></tr>
+  </table>
+
+  
+  <h2>6 · DBB — Correção #6: Lifecycle <code>merge</code> documentado</h2>
+
+  <p style="margin-bottom:10px;font-size:13px;color:#57606a">
+    <strong>Problema:</strong> O lifecycle <code>merge</code> não gerava artefatos de deploy, mas isso não estava documentado no arquivo — equipes podiam confundir sua ausência com um bug.
+  </p>
+
+  <div class="diff"><span class="hdr">+++ .setup/build/dbb-build.yaml (adicionado antes do lifecycle merge)</span>
+<span class="add">+ # NOTE: This lifecycle intentionally does NOT include Package, zOSConnect,</span>
+<span class="add">+ #       VanillaFrontend, ServerXmlPackager or ImsJavaBuilder.</span>
+<span class="add">+ #       It is designed for lightweight validation of topic-branch changes</span>
+<span class="add">+ #       before they are merged into the main build branch.</span>
+<span class="add">+ #       No deployable TAR artifact is produced by this lifecycle.</span>
+<span class="add">+ #       Use the 'pipeline' lifecycle for full CI/CD artifact generation.</span></div>
+
+  
+  <h2>Dependências externas e ações manuais necessárias</h2>
+
+  <div class="note">
+    <strong>⚠ Ações que não podem ser automatizadas — requerem configuração manual no GitHub:</strong>
+    <ul style="margin-top:8px">
+      <li>Criar a variável de repositório <code>BOZ_FRONTEND_URL</code> em <em>Settings → Variables → Actions</em> com o valor correto do ambiente (ex.: <code>http://&lt;seu-host&gt;:9081</code>). Necessária para <code>Setup.yml</code>.</li>
+      <li>As variáveis <code>ZOS_HOST</code>, <code>ZOS_SANDBOX_DIR</code> e o secret <code>GH_ACTIONS_PAT</code> já eram necessários antes — confirmar que estão cadastrados para que o novo <code>Pipeline.yml</code> funcione.</li>
+      <li>O arquivo de configuração ZCodeScan específico por ambiente (<code>$HOME/zcs_config_file.yml</code> no z/OS USS) pode ser criado copiando <code>zcodescan/zcodescan-config.yml</code> do repositório e ajustando parâmetros locais. Sem ele, o fallback do repositório será usado automaticamente.</li>
+    </ul>
+  </div>
+
+  
+  <h2>Arquivos alterados / criados</h2>
+  <table>
+    <tr><th>Arquivo</th><th>Tipo</th><th>Correção</th></tr>
+    <tr><td><code>.setup/tasks/task-wazi-deploy.sh</code></td><td>Modificado</td><td>#1 tar vazio + #2 typo log</td></tr>
+    <tr><td><code>.setup/tasks/task-zcodescan-static-scan.sh</code></td><td>Modificado</td><td>#3 fallback config TAZ</td></tr>
+    <tr><td><code>.github/workflows/Setup.yml</code></td><td>Modificado</td><td>#4 IP hardcoded</td></tr>
+    <tr><td><code>.setup/build/dbb-build.yaml</code></td><td>Modificado</td><td>#6 documentação lifecycle merge</td></tr>
+    <tr><td><code>.github/workflows/Pipeline.yml</code></td><td><strong>Criado</strong></td><td>#5 pipeline completa CI/CD</td></tr>
+    <tr><td><code>zcodescan/zcodescan-config.yml</code></td><td><strong>Criado</strong></td><td>#3 config base versionada no repo</td></tr>
+  </table>
+
+  <footer>Made with IBM Bob</footer>
+</div>
+</body>
+</html>

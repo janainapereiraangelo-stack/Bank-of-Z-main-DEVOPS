@@ -1,0 +1,60 @@
+################################################################
+# LICENSED MATERIALS - PROPERTY OF IBM
+# "RESTRICTED MATERIALS OF IBM"
+# (C) COPYRIGHT IBM CORPORATION 2020, 2024. ALL RIGHTS RESERVED
+# US GOVERNMENT USERS RESTRICTED RIGHTS - USE, DUPLICATION,
+# OR DISCLOSURE RESTRICTED BY GSA ADP SCHEDULE
+# CONTRACT WITH IBM CORPORATION
+################################################################
+
+name: sam-application
+description: Wazi's multi-root workspace code sample for COBOL
+version: 5.0.0
+author:
+  name: IBM CORPORATION
+
+profiles:
+  - name: zcodescan-sam
+    type: zcodescan
+    settings:
+      rules:
+        - type: local
+          locations:
+            - "zcodescan/sam-rules.yaml"
+
+  # User build profile example, requires IBM Dependency-Based Build v3.x
+  - name: zBuilder-userbuild
+    type: dbb
+    settings:
+      command: "$DBB_HOME/bin/dbb build"
+      lifecycle: user
+      lifecycleArgs:
+        - "--hlq ${dbbHlq}"
+        - "--errPrefix ${errPrefix}" # will be ignored if Advanced Features are not available
+      additionalDependencies:
+        - "dbb-app.yaml"
+      logFilePatterns:
+        - "*.log"
+        - "BuildReport.html"
+        - "*.json"
+
+  # User build profile example, requires IBM Dependency-Based Build v2.x
+  - name: groovyz-userbuild
+    type: dbb
+    settings:
+      application: SAM-MR
+      command: "unset JAVA_OPTS; $DBB_HOME/bin/groovyz"
+      buildScriptPath: "${dbbWorkspace}/dbb-zappbuild/build.groovy"
+      buildScriptArgs:
+        - "--userBuild"
+        - "--workspace ${dbbWorkspace}"
+        - "--application ${application}"
+        - "--hlq ${dbbHlq}"
+        - "--outDir ${dbbLogDir}"
+        - "--errPrefix ${errPrefix}" # will be ignored if Advanced Features are not available
+        # - "--dependencyFile ${dependencyFile}" # use with older versions of dbb-zappbuild
+      additionalDependencies:
+        - application-conf
+      logFilePatterns:
+        - "${buildFile.basename}.log"
+        - "BuildReport.*"

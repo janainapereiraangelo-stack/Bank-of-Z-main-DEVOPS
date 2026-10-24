@@ -1,0 +1,302 @@
+
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Revisão da Esteira DevOps — Bank of Z</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; font-size: 14px; line-height: 1.6; color: #1f2328; background: #ffffff; padding: 32px 16px 48px; }
+  .page { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { color: #57606a; font-size: 13px; margin-bottom: 28px; }
+  h2 { font-size: 15px; font-weight: 700; margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 1px solid #e5e7eb; }
+  h3 { font-size: 13px; font-weight: 700; margin: 16px 0 6px; color: #1f2328; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px; margin-left: 8px; vertical-align: middle; }
+  .ok    { background: #dcfce7; color: #166534; }
+  .warn  { background: #fef9c3; color: #854d0e; }
+  .issue { background: #fee2e2; color: #991b1b; }
+  .info  { background: #dbeafe; color: #1e40af; }
+
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 18px; font-size: 13px; }
+  th { background: #f7f8fa; text-align: left; padding: 7px 10px; border: 1px solid #e5e7eb; color: #57606a; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  td { padding: 7px 10px; border: 1px solid #e5e7eb; vertical-align: top; }
+  tr:nth-child(even) td { background: #fafafa; }
+
+  .card { background: #f7f8fa; border: 1px solid #e5e7eb; border-radius: 6px; padding: 14px 16px; margin: 12px 0; }
+  .card-title { font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+  ul { padding-left: 20px; margin: 6px 0; }
+  li { margin: 3px 0; }
+  code { font-size: 12px; background: #f0f0f0; padding: 1px 5px; border-radius: 3px; font-family: monospace; }
+  .finding { border-left: 3px solid #e5e7eb; padding: 6px 10px; margin: 8px 0; font-size: 13px; }
+  .finding.warn  { border-color: #f59e0b; }
+  .finding.issue { border-color: #ef4444; }
+  .finding.ok    { border-color: #22c55e; }
+  .finding strong { display: block; margin-bottom: 2px; }
+  .phase-flow { display: flex; gap: 0; margin: 14px 0; flex-wrap: wrap; }
+  .phase-step { background: #f7f8fa; border: 1px solid #e5e7eb; padding: 8px 14px; font-size: 12px; font-weight: 600; position: relative; color: #1f2328; }
+  .phase-step::after { content: "→"; position: absolute; right: -10px; top: 50%; transform: translateY(-50%); color: #57606a; font-size: 13px; z-index: 1; }
+  .phase-step:last-child::after { display: none; }
+  .phase-step.active { background: #3b82d4; color: #fff; border-color: #3b82d4; }
+  .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0 24px; }
+  .summary-card { border: 1px solid #e5e7eb; border-radius: 6px; padding: 14px; text-align: center; }
+  .summary-card .number { font-size: 28px; font-weight: 700; line-height: 1.1; }
+  .summary-card .label  { font-size: 12px; color: #57606a; margin-top: 2px; }
+  .summary-card.green   { border-color: #86efac; background: #f0fdf4; }
+  .summary-card.green .number { color: #166534; }
+  .summary-card.yellow  { border-color: #fde68a; background: #fffbeb; }
+  .summary-card.yellow .number { color: #92400e; }
+  .summary-card.red     { border-color: #fca5a5; background: #fff1f2; }
+  .summary-card.red .number { color: #991b1b; }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid #e5e7eb; text-align: center; font-size: 12px; color: #57606a; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Revisão da Esteira DevOps — Bank of Z</h1>
+  <div class="subtitle">Análise completa: DBB (zBuilder) · ZCodeScan (TAZ) · Wazi Deploy (WASI)  |  Gerado por IBM Bob</div>
+
+  
+  <div class="phase-flow">
+    <div class="phase-step">PR / Push</div>
+    <div class="phase-step">ZCodeScan<br /><small style="font-weight:400;font-size:11px">Análise estática</small></div>
+    <div class="phase-step active">DBB Build<br /><small style="font-weight:400;font-size:11px">pipeline/full</small></div>
+    <div class="phase-step">Wazi Deploy<br /><small style="font-weight:400;font-size:11px">generate → deploy</small></div>
+    <div class="phase-step">Verificação<br /><small style="font-weight:400;font-size:11px">tests/run-all.sh</small></div>
+  </div>
+
+  
+  <div class="summary-grid">
+    <div class="summary-card green">
+      <div class="number">✔</div>
+      <div class="label">DBB — Configuração OK</div>
+    </div>
+    <div class="summary-card yellow">
+      <div class="number">3</div>
+      <div class="label">Pontos de atenção (TAZ/WASI)</div>
+    </div>
+    <div class="summary-card red">
+      <div class="number">2</div>
+      <div class="label">Riscos identificados</div>
+    </div>
+  </div>
+
+  
+  <h2>1 · DBB — Dependency Based Build <span class="badge ok">zBuilder v1.0.0</span></h2>
+
+  <h3>Aplicação e configuração principal</h3>
+  <table>
+    <tr><th>Parâmetro</th><th>Valor</th><th>Status</th></tr>
+    <tr><td>Aplicação</td><td><code>Bank-of-Z-main</code></td><td><span class="badge ok">OK</span></td></tr>
+    <tr><td>Config (<code>dbb-app.yaml</code>)</td><td>Tarefas: COBOL, PLI, Assembler</td><td><span class="badge ok">OK</span></td></tr>
+    <tr><td>HLQ</td><td><code>${APP_HLQ}.DBB</code> → <code>BANKZ.DBB</code></td><td><span class="badge ok">OK</span></td></tr>
+    <tr><td>Log Encoding</td><td><code>ISO8859-1</code></td><td><span class="badge ok">OK</span></td></tr>
+    <tr><td>DBB Home</td><td><code>config.yaml → dbb.dbb_home</code></td><td><span class="badge ok">Configurável</span></td></tr>
+    <tr><td>Gradle Home</td><td><code>gradle-9.5.1</code></td><td><span class="badge ok">OK</span></td></tr>
+  </table>
+
+  <h3>Lifecycles disponíveis (<code>dbb-build.yaml</code>)</h3>
+  <table>
+    <tr><th>Lifecycle</th><th>Quando usar</th><th>Destaques</th></tr>
+    <tr><td><code>file</code></td><td>Build manual de um arquivo</td><td>Sem Package, sem zOSConnect</td></tr>
+    <tr><td><code>full</code></td><td>Build inicial completo</td><td>Inclui VanillaFrontend, ImsJavaBuilder, zOSConnect, Package</td></tr>
+    <tr><td><code>pipeline</code></td><td>CI/CD impacto+release</td><td>Suporta <code>--release-id</code> e <code>--build-id</code></td></tr>
+    <tr><td><code>impact</code></td><td>Apenas alterados</td><td>Suporta <code>--baselineRef</code></td></tr>
+    <tr><td><code>merge</code></td><td>Topic branch → main</td><td>Sem Package, sem zOSConnect</td></tr>
+    <tr><td><code>user</code></td><td>IDE / User Build</td><td>Inclui UnitTest automático pós-compilação</td></tr>
+    <tr><td><code>metadata</code></td><td>Coletar metadados sem build</td><td>ScanLoadModule ativo</td></tr>
+  </table>
+
+  <h3>Linguagens configuradas</h3>
+  <table>
+    <tr><th>Linguagem</th><th>Padrão de fonte</th><th>DeployType</th></tr>
+    <tr><td>COBOL</td><td><code>**/cobol/*.cbl</code></td><td>LOAD / CICSLOAD / IMSLOAD</td></tr>
+    <tr><td>COBOL Testcase</td><td><code>**/testcase/*.cbl</code></td><td>UNIT-TESTCASE</td></tr>
+    <tr><td>PL/I</td><td><code>**/pli/*.pli</code></td><td>LOAD</td></tr>
+    <tr><td>Assembler</td><td><code>**/PSB/*.asm</code>, <code>**/DBD/*.asm</code></td><td>PSBLOAD / DBDLOAD</td></tr>
+    <tr><td>BMS</td><td><code>**/bms/*.bms</code></td><td>MAPLOAD</td></tr>
+    <tr><td>REXX</td><td><code>**/rexx/*.rexx</code></td><td>—</td></tr>
+    <tr><td>LinkEdit</td><td><code>**/lnk/*.lnk</code></td><td>LOAD</td></tr>
+    <tr><td>CPP</td><td>C++</td><td>—</td></tr>
+    <tr><td>Transfer</td><td>Cópia de membros</td><td>—</td></tr>
+  </table>
+
+  <div class="finding ok">
+    <strong>✔ Build script robusto (<code>task-dbb-build.sh</code>)</strong>
+    Valida <code>Build Status : CLEAN</code>, detecta 0 arquivos processados, coleta tar, trata WAR e sempre produz log tar na saída (trap EXIT).
+  </div>
+
+  <div class="finding warn">
+    <strong>⚠ Lifecycle <code>merge</code> não inclui Package</strong>
+    O lifecycle <code>merge</code> não executa zOSConnect nem Package. Isso é intencional para merges de branch, mas deve ser documentado para equipes que esperam artefatos no merge.
+  </div>
+
+  
+  <h2>2 · TAZ — IBM ZCodeScan (Análise Estática) <span class="badge ok">Ativo</span></h2>
+
+  <h3>Configuração do scan</h3>
+  <table>
+    <tr><th>Parâmetro</th><th>Valor</th></tr>
+    <tr><td>Arquivo de regras</td><td><code>zcodescan/zcodescan-rules.yaml</code></td></tr>
+    <tr><td>Config file</td><td><code>$HOME/zcs_config_file.yml</code> (externo ao repo)</td></tr>
+    <tr><td>Fonte escaneada</td><td><code>src/base</code></td></tr>
+    <tr><td>Encoding</td><td><code>IBM-1047</code></td></tr>
+    <tr><td>Export formats</td><td><code>sonarqube</code>, <code>junit</code></td></tr>
+    <tr><td>Max RC</td><td><code>4</code></td></tr>
+    <tr><td>Build list</td><td>Gerado pelo DBB em modo <code>preview</code> antes do scan</td></tr>
+  </table>
+
+  <h3>Regras configuradas — distribuição por severidade</h3>
+  <table>
+    <tr><th>Severidade</th><th>Linguagem</th><th>Qtd. de regras</th><th>Exemplos notáveis</th></tr>
+    <tr><td><span class="badge issue">HIGH</span></td><td>COBOL</td><td>~16</td><td>AcceptFromConsole, AlterRule, BlockContains, CheckSqlcodeAfterExecSQL, DebugFeaturesInProd, FileStatusCheck, OccursDependingOn, SqlAvoidSelectStar, UnprotectedAuthCredential, XMLParse…</td></tr>
+    <tr><td><span class="badge warn">MEDIUM</span></td><td>COBOL</td><td>~38</td><td>Comp3Picture, CicsNoHandle, CursorClose, EvaluateWhenOther, NestedIfLimit (6), ProcedureRule (100 linhas), StopRun, SqlWhereRule…</td></tr>
+    <tr><td><span class="badge info">LOW / INFO</span></td><td>COBOL</td><td>~8</td><td>AvoidSection, ParagraphComment, PerformParagraph, UninitializedVariables…</td></tr>
+    <tr><td><span class="badge issue">HIGH</span></td><td>PL/I</td><td>6</td><td>ArithmeticExprWithout*, DotQualRefs, GoToRule, ImplicitDeclaration</td></tr>
+    <tr><td><span class="badge warn">MEDIUM</span></td><td>PL/I</td><td>5</td><td>FactorAttrib, LoopControl, ProcedureFilenameMatch, SingleVariable</td></tr>
+  </table>
+
+  <div class="finding ok">
+    <strong>✔ Integração correta com DBB preview</strong>
+    O script executa DBB em modo <code>preview</code> para gerar a build list e usa exatamente esses arquivos no scan — evitando varrer fontes não impactados pela mudança.
+  </div>
+
+  <div class="finding warn">
+    <strong>⚠ Arquivo de config ZCodeScan fora do repositório</strong>
+    <code>SCAN_CONFIG_FILE</code> aponta para <code>$HOME/zcs_config_file.yml</code> — um arquivo externo ao repositório. Se ausente, o scan é silenciosamente pulado (<code>exit 0</code>). Isso pode mascarar falhas em ambientes novos.
+    <br /><em>Recomendação: versionar um arquivo de config base no repo em <code>zcodescan/</code> com fallback explícito ou erro caso não exista.</em>
+  </div>
+
+  <div class="finding warn">
+    <strong>⚠ RC=255 tratado como erro, mas RC -1 pode não ser detectado corretamente</strong>
+    A lógica <code>[ "$rc" -eq 255 ] || [ "$rc" -lt 0 ]</code> pode falhar em shells sem aritmética signed. Testar com <code>bash -c '[ -1 -lt 0 ]'</code> em z/OS USS confirma o comportamento esperado, mas vale validar no ambiente de produção.
+  </div>
+
+  
+  <h2>3 · WASI — IBM Wazi Deploy <span class="badge ok">v1.0.0</span></h2>
+
+  <h3>Fluxo de deployment</h3>
+  <div class="phase-flow" style="margin-bottom:16px">
+    <div class="phase-step active">wazideploy-generate</div>
+    <div class="phase-step active">wazideploy-deploy</div>
+    <div class="phase-step">Evidence YAML</div>
+    <div class="phase-step">Log TAR</div>
+  </div>
+
+  <h3>Configuração principal</h3>
+  <table>
+    <tr><th>Parâmetro</th><th>Valor</th></tr>
+    <tr><td>Método de deployment</td><td><code>deployment-method.yml</code> — CICS/DB2/IMS/zOSConnect</td></tr>
+    <tr><td>Environment file</td><td><code>Development.yml</code></td></tr>
+    <tr><td>Target HLQ</td><td><code>${APP_HLQ}.V${ver}R${rel}M${mod}</code></td></tr>
+    <tr><td>Pacote de entrada</td><td>TAR mais recente em <code>${DBB_LOG_FOLDER}/BANKZ-*.tar</code></td></tr>
+    <tr><td>IMS skip flag</td><td><code>IMS_DISABLED=true</code> → adiciona <code>-pst ims</code></td></tr>
+    <tr><td>Evidências</td><td><code>evidences/evidence-bankz.yaml</code></td></tr>
+  </table>
+
+  <h3>Tipos de artefatos mapeados (<code>types_pattern_mapping.yml</code>)</h3>
+  <table>
+    <tr><th>Padrão</th><th>Destino</th><th>Tipo</th></tr>
+    <tr><td><code>*.LOAD</code></td><td><code>${HLQ}.LOAD</code></td><td>LOAD (native_copy)</td></tr>
+    <tr><td><code>*.CICSLOAD / *.MAPLOAD</code></td><td><code>${HLQ}.LOADLIB</code> + CICS NEWCOPY</td><td>LOAD</td></tr>
+    <tr><td><code>*.DBRM</code></td><td><code>${HLQ}.DBRM</code></td><td>Binary + DB2 bind</td></tr>
+    <tr><td><code>*.JCL</code></td><td><code>${HLQ}.JCL</code></td><td>Text</td></tr>
+    <tr><td><code>*-frontend*.WAR</code></td><td>Liberty Frontend <code>apps/</code></td><td>Binary (USS)</td></tr>
+    <tr><td><code>*.WAR</code> (outros)</td><td>z/OS Connect <code>apps/</code></td><td>Binary (USS)</td></tr>
+    <tr><td><code>*.IMSLOAD</code></td><td><code>${ims_hlq}.${datastore}.PGMLIB</code></td><td>LOAD</td></tr>
+    <tr><td><code>*.PSBLOAD</code></td><td><code>${ims_hlq}.${datastore}.PSBLIB</code></td><td>IMS PSB</td></tr>
+    <tr><td><code>*.DBDLOAD</code></td><td><code>${ims_hlq}.${datastore}.DBDLIB</code></td><td>IMS DBD</td></tr>
+    <tr><td><code>*.JAR</code></td><td><code>${sandbox_path}/jars</code></td><td>Binary (USS)</td></tr>
+  </table>
+
+  <div class="finding ok">
+    <strong>✔ Skip automático se não há pacote</strong>
+    Se <code>PACKAGE_URL</code> estiver vazio ou "NONE", o deploy é pulado graciosamente — correto para mudanças sem impacto em build.
+  </div>
+
+  <div class="finding warn">
+    <strong>⚠ Typo no log da tarefa <code>task-wazi-deploy.sh</code> (linha 153)</strong>
+    O loop de log usa <code>"[GENERATE-${APP_BASE_NAME} $line"</code> — falta o colchete de fechamento <code>]</code>. Embora não quebre a execução, suja os logs de CI.
+    <br /><em>Correção: substituir por <code>"[GENERATE-${APP_BASE_NAME}] $line"</code>.</em>
+  </div>
+
+  <div class="finding issue">
+    <strong>🔴 Falha silenciosa no finalize_results (tar de logs deploy)</strong>
+    O bloco <code>finalize_results</code> no deploy cria o tar com <code>tar cf "$LOG_TAR" "logs"</code>, mas o diretório de trabalho nesse momento é <code>$outputDir</code> (linha 59: <code>cd "$outputDir"</code>) e os logs são salvos como <code>wazideploy*.log</code> diretamente nesse diretório — não em um subdiretório <code>logs/</code>. O tar resultante provavelmente ficará vazio ou falhará.
+    <br /><em>Recomendação: ajustar para <code>tar cf "$LOG_TAR" -C "$outputDir" . 2&gt;/dev/null || true</code> ou criar corretamente o subdiretório <code>logs/</code>.</em>
+  </div>
+
+  
+  <h2>4 · GitHub Actions — Workflow CI/CD</h2>
+  <table>
+    <tr><th>Workflow</th><th>Trigger</th><th>Etapas</th></tr>
+    <tr>
+      <td><code>PR.yml</code></td>
+      <td>PR opened / reopened / synchronize</td>
+      <td>controller → setup (chama Setup.yml)</td>
+    </tr>
+    <tr>
+      <td><code>Setup.yml</code></td>
+      <td>workflow_call (reutilizável)</td>
+      <td>clone repo para USS → full-install → verify-installation</td>
+    </tr>
+  </table>
+
+  <div class="finding warn">
+    <strong>⚠ URL hardcoded no Setup.yml</strong>
+    <code>bozFrontendUrl: http://9.47.80.84:9081</code> está hardcoded — idealmente deveria ser uma variável de repositório (<code>vars.BOZ_FRONTEND_URL</code>) para facilitar portabilidade entre ambientes.
+  </div>
+
+  <div class="finding issue">
+    <strong>🔴 Nenhuma pipeline de CI executa ZCodeScan + DBB + Wazi Deploy em sequência</strong>
+    Os workflows do GitHub Actions (<code>PR.yml</code>, <code>Setup.yml</code>) executam apenas install/verify. A pipeline completa <code>scan-build-and-deploy</code> é orquestrada pelo <code>pipeline-remote.sh</code> / <code>pipeline-common.sh</code>, mas não está mapeada em nenhum workflow YAML do GitHub. Isso significa que a esteira completa não é acionada automaticamente em PRs.
+    <br /><em>Recomendação: criar um workflow que invoque <code>pipeline-common.sh scan-build-and-deploy</code> via SSH (similar ao Setup.yml) para PRs ou merges para main.</em>
+  </div>
+
+  
+  <h2>5 · Ações recomendadas</h2>
+  <table>
+    <tr><th>#</th><th>Prioridade</th><th>Componente</th><th>Ação</th></tr>
+    <tr>
+      <td>1</td>
+      <td><span class="badge issue">Alta</span></td>
+      <td>GitHub Actions</td>
+      <td>Criar workflow que execute <code>scan-build-and-deploy</code> via SSH em PRs para main</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><span class="badge issue">Alta</span></td>
+      <td>Wazi Deploy</td>
+      <td>Corrigir <code>finalize_results</code> no <code>task-wazi-deploy.sh</code> — tar de logs vazio</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><span class="badge warn">Média</span></td>
+      <td>TAZ / ZCodeScan</td>
+      <td>Versionar <code>zcs_config_file.yml</code> no repo ou retornar erro se ausente</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><span class="badge warn">Média</span></td>
+      <td>Wazi Deploy</td>
+      <td>Corrigir typo <code>[GENERATE-${APP_BASE_NAME}</code> → <code>[GENERATE-${APP_BASE_NAME}]</code></td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td><span class="badge warn">Média</span></td>
+      <td>GitHub Actions</td>
+      <td>Substituir IP hardcoded <code>9.47.80.84:9081</code> por variável de repositório</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td><span class="badge info">Baixa</span></td>
+      <td>DBB</td>
+      <td>Documentar que lifecycle <code>merge</code> não gera Package/artefatos</td>
+    </tr>
+  </table>
+
+  <footer>Made with IBM Bob</footer>
+</div>
+</body>
+</html>

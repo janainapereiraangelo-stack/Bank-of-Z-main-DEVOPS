@@ -1,0 +1,59 @@
+{
+  "mcpServers": {
+    "zopeneditor-bob-wazi-sample": {
+      "url": "http://localhost:58769/mcp",
+      "type": "streamable-http",
+      "timeout": 600000,
+      "alwaysAllow": [
+        "wazideploy-list-artifacts",
+        "wazideploy-check-version",
+        "wazideploy-list-environments",
+        "wazideploy-list-deployments",
+        "zapp-get-property-groups",
+        "zopeneditor-get-embedded-languages",
+        "zopeneditor-cobol-renumber-file",
+        "zopeneditor-cobol-unnumber-file",
+        "zopeneditor-cobol-format-file",
+        "zopeneditor-cobol-renumber-multiple-files",
+        "zopeneditor-cobol-unnumber-multiple-files",
+        "zopeneditor-cobol-format-multiple-files",
+        "zopeneditor-read-the-log",
+        "zopeneditor-show-data-elements-view",
+        "zopeneditor-get-embedded-languages",
+        "zopeneditor-cobol-get-data-flow",
+        "zopeneditor-cobol-get-program-control-flow",
+        "zopeneditor-pli-get-program-control-flow",
+        "zcodescan-check-current-program",
+        "zcodescan-check-list-of-local-programs",
+        "rseapi-get-system-resource-consumption",
+        "rseapi-get-all-job-resource-consumption",
+        "rseapi-download-unix-folder",
+        "rseapi-copy-unix-to-mvs",
+        "rseapi-copy-mvs-to-unix",
+        "rseapi-copy-unix-cross-lpar",
+        "wazideploy-list-packages",
+        "wazideploy-list-failures",
+        "wazideploy-list-field-values",
+        "zowe-list-job-spools",
+        "zowe-get-single-job-spool-output",
+        "zowe-list-datasets",
+        "zowe-list-members",
+        "zowe-get-dataset-content",
+        "zowe-search-dataset",
+        "zowe-list-jobs",
+        "zowe-list-unix-files",
+        "zowe-get-unix-file-content",
+        "zowe-list-profiles",
+        "dbb-get-build-result",
+        "dbb-get-last-failed-build-result",
+        "dbb-download-build-result-attachments",
+        "userbuild-run-user-build",
+        "userbuild-get-dbb-log"
+      ],
+      "disabled": false,
+      "disabledTools": [
+        "zowe-get-all-job-spools-output"
+      ]
+    }
+  }
+}
