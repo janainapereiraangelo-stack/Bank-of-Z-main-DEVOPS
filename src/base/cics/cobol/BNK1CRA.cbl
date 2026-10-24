@@ -404,7 +404,7 @@
                      WS-TIME-NOW-GRP-MM DELIMITED BY SIZE
                      INTO ABND-TIME
               END-STRING
-
+ 
               MOVE WS-U-TIME   TO ABND-UTIME-KEY
               MOVE 'HBNK'      TO ABND-CODE
 

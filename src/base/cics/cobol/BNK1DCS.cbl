@@ -27,7 +27,7 @@
 
        INPUT-OUTPUT SECTION.
        DATA DIVISION.
-
+ 
        WORKING-STORAGE SECTION.
        01 WS-CICS-WORK-AREA.
           03 WS-CICS-RESP             PIC S9(8) COMP

@@ -52,7 +52,7 @@
            EXEC SQL
               INCLUDE CUSTDB2
            END-EXEC.
-
+ 
       * CUSTOMER Host variables for DB2
        01 HOST-CUSTOMER-ROW.
           03 HV-CUSTOMER-EYECATCHER     PIC X(4).

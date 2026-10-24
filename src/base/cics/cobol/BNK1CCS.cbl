@@ -28,7 +28,7 @@
        WORKING-STORAGE SECTION.
        01 WS-UCTRANS                  PIC S9(8) COMP VALUE 0.
        01 STORED-UCTRANS              PIC S9(8) COMP VALUE 0.
-
+ 
        01 WS-CICS-WORK-AREA.
           03 WS-CICS-RESP             PIC S9(8) COMP VALUE 0.
           03 WS-CICS-RESP2            PIC S9(8) COMP VALUE 0.

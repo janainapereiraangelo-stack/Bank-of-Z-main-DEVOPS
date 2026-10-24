@@ -76,7 +76,7 @@
           03 WS-COMM-ACCTYPE           PIC X(8).
           03 WS-COMM-INTRT             PIC 9(4)V99.
           03 WS-COMM-OVERDR            PIC 9(8).
-
+ 
        01 DATE-REFORMED.
           03 NSTMTDD-CHAR             PIC XX.
           03 NSTMTDD-REFORM REDEFINES NSTMTDD-CHAR.

@@ -16,7 +16,7 @@
        OBJECT-COMPUTER.  IBM-370.
 
        INPUT-OUTPUT SECTION.
-
+ 
 
        DATA DIVISION.
        FILE SECTION.
