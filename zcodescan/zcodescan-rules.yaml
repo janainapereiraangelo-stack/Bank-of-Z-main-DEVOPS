@@ -58,18 +58,20 @@ rules:
         value: true
       - name: TitleDirective
         value: true
-  - id: zcodescan.cobol.rules.ConditionNamePrefixRule
-    severity: MEDIUM
-    parameters:
-      - name: CONDITION_NAME_PREFIX
-        value: TEST
+  # Disabled: sample parameter (TEST) not part of Bank of Z conventions
+  #- id: zcodescan.cobol.rules.ConditionNamePrefixRule
+  #  severity: MEDIUM
+  #  parameters:
+  #    - name: CONDITION_NAME_PREFIX
+  #      value: TEST
   - id: zcodescan.cobol.rules.CopySuppressRule
     severity: MEDIUM
-  - id: zcodescan.cobol.rules.CopybookRule
-    severity: HIGH
-    parameters:
-      - name: CopybookName
-        value: lgpolicy
+  # Disabled: sample parameter (lgpolicy) from another application
+  #- id: zcodescan.cobol.rules.CopybookRule
+  #  severity: HIGH
+  #  parameters:
+  #    - name: CopybookName
+  #      value: lgpolicy
   - id: zcodescan.cobol.rules.CorrespondingRule
     severity: MEDIUM
   - id: zcodescan.cobol.rules.CursorCloseExplicitRule
@@ -104,11 +106,12 @@ rules:
     severity: MEDIUM
   - id: zcodescan.cobol.rules.FileMergeAvoidRule
     severity: MEDIUM
-  - id: zcodescan.cobol.rules.FileNameConventionRule
-    severity: MEDIUM
-    parameters:
-      - name: "ConventionMask"
-        value: "SAM.*"
+  # Disabled: sample mask (SAM.*) from another application
+  #- id: zcodescan.cobol.rules.FileNameConventionRule
+  #  severity: MEDIUM
+  #  parameters:
+  #    - name: "ConventionMask"
+  #      value: "SAM.*"
   - id: zcodescan.cobol.rules.FileOpenInLoopRule
     severity: MEDIUM
   - id: zcodescan.cobol.rules.FileSortAvoidRule
@@ -192,11 +195,12 @@ rules:
     severity: MEDIUM
   - id: zcodescan.cobol.rules.RespOptionRule
     severity: MEDIUM
-  - id: zcodescan.cobol.rules.RestrictedRoutineRule
-    severity: HIGH
-    parameters:
-      - name: RoutineName
-        value: LGADBC
+  # Disabled: sample routine (LGADBC) from another application
+  #- id: zcodescan.cobol.rules.RestrictedRoutineRule
+  #  severity: HIGH
+  #  parameters:
+  #    - name: RoutineName
+  #      value: LGADBC
   - id: zcodescan.cobol.rules.SearchAllRule
     severity: MEDIUM
   - id: zcodescan.cobol.rules.SectionCommentRule
@@ -231,11 +235,12 @@ rules:
         value: true
       - name: "Update"
         value: true
-  - id: zcodescan.cobol.rules.StaticCallNameRule
-    severity: HIGH
-    parameters:
-      - name: PROGRAM_NAME
-        value: TEST
+  # Disabled: sample parameter (TEST) not part of Bank of Z conventions
+  #- id: zcodescan.cobol.rules.StaticCallNameRule
+  #  severity: HIGH
+  #  parameters:
+  #    - name: PROGRAM_NAME
+  #      value: TEST
   - id: zcodescan.cobol.rules.StopRunRule
     severity: MEDIUM
   - id: zcodescan.cobol.rules.StringNoTruncationRule

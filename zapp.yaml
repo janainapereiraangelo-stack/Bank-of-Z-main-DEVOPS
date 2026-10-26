@@ -371,7 +371,7 @@ profiles:
 
   # EDT (Early Development Testing) - Test profile for Batch programs
   # Used by IBM Early Development Testing extension (IBM TAZ EDT) to record,
-  # replay and unit test BANKTRX and DEVOPSPL batch programs.
+  # replay and unit test the BNKSTMT batch program.
   # The extension uses the first profile of type "test", so recording and
   # unitTest settings must live in the same profile.
   - name: edt-batch
@@ -380,17 +380,16 @@ profiles:
       recording:
         applicationToCapture:
           recordingType: Batch
-          jclSteps: JCL/RUNBANK.jcl
+          jclSteps: src/base/batch/jcl/BNKSTMT.jcl
           programs:
-            - BANKTRX
-            - DEVOPSPL
+            - BNKSTMT
         hostRecordingSettings:
-          dteEngineLocation: ${HLQ}.SEQAMOD
+          dteEngineLocation: EQAW.SEQAMOD
       unitTest:
         procLib:
           - SYS1.PROCLIB
         userLibraries:
-          - ${HLQ}.SAMPLE.LOAD
+          - BANKZ.V0R1M0.LOAD
         defaultTestCaseFolder: tests/unit
         jobcard: "//EDTTEST  JOB ,NOTIFY=&SYSUID,MSGCLASS=H,MSGLEVEL=(1,1)"
 

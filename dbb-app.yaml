@@ -22,9 +22,9 @@ application:
         - name: dependencySearchPath
           value: search:${WORKSPACE}/?path=${APP_DIR_NAME}/src/base/cics/copy/*.cpy;${APP_DIR_NAME}/src/base/ims/copy/*.cpy
         - name: SIGYCOMP
-          value: COBOL.V6R2.SIGYCOMP
+          value: IGY.V6R5M0.SIGYCOMP
         - name: SCEELKED
-          value: SYS1.CEE.SCEELKED
+          value: CEE.SCEELKED
 
     - task: PLI
       sources:

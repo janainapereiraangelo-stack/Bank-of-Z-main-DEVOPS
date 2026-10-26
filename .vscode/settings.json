@@ -3,21 +3,21 @@
   "grub.serverRoot": "/usr/local/sandboxes/bank-of-z",
   "java.compile.nullAnalysis.mode": "disabled",
   "zopeneditor.userbuild.userSettings": {
-        "dbbDefaultZappProfile": "zowe-upload-userbuild2",
-        "dbbHlq": "RAFAELT.BOZ.UB",
-        "dbbWorkspace": "/u/rafaelt/userBuild_boz",
-        "dbbApplication": "Bank-of-Z"
-    },
-    "zopeneditor.zowe": {
-        "defaultCliProfile": "rse"
-    },
-    "python.testing.unittestArgs": [
-        "-v",
-        "-s",
-        ".",
-        "-p",
-        "*test.py"
-    ],
-    "python.testing.pytestEnabled": false,
-    "python.testing.unittestEnabled": true
+    "dbbDefaultZappProfile": "zBuilder-userbuild",
+    "dbbHlq": "JANAINA.BOZ.UB",
+    "dbbWorkspace": "/u/janaina/userBuild_boz",
+    "dbbApplication": "Bank-of-Z"
+  },
+  "zopeneditor.zowe": {
+    "defaultCliProfile": "rse"
+  },
+  "python.testing.unittestArgs": [
+    "-v",
+    "-s",
+    ".",
+    "-p",
+    "*test.py"
+  ],
+  "python.testing.pytestEnabled": false,
+  "python.testing.unittestEnabled": true
 }

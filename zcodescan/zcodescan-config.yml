@@ -22,10 +22,10 @@
 # Source encoding of the COBOL/PL/I files being scanned
 encoding: IBM-1047
 
-# Maximum return code accepted from the scan (0-8).
-# 0 = only violations of severity ERROR cause failure
-# 4 = violations of severity WARNING and above cause failure
-# 8 = all severities reported but scan never fails the build
+# Maximum return code accepted from the scan.
+# NOTE: the pipeline gate (task-zcodescan-static-scan.sh) fails the build when
+# the scan RC is greater than 'zcodescan.max_rc' in .setup/config/config.yaml.
+# Keep this value aligned with that setting.
 maxReturnCode: 4
 
 # Languages to scan
